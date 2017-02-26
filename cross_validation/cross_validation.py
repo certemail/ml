@@ -1,8 +1,12 @@
 from sklearn.datasets import load_digits
 from sklearn.preprocessing import label_binarize
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt 
+
+def display_accuracy(scores):
+    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 '''convert class labels to be 1 if digit is 9; 0 for all other digits'''
 def convert_class_labels(d):
@@ -23,12 +27,18 @@ def run_nearest_neighbor(digits):
     print("cross_val_scores for 1-nearest neighbor:")
     for i in range(len(scores)):
         print("\t" + str(scores[i]))
+    display_accuracy(scores)
 #---run_nearest_neighbor---------------------------------
 
 	
 def run_decision_tree(digits):
     print("running decision tree...")
+    clf = DecisionTreeClassifier()
+    scores = cross_val_score(clf, digits.data, convert_class_labels(digits), cv=10)
     print("cross_val_scores for decision tree: ")
+    for i in range(len(scores)):
+        print("\t" + str(scores[i]))
+    display_accuracy(scores)
 #---run_decision_tree------------------------------------
 
 
@@ -45,10 +55,13 @@ def main():
     print(digits.data)
     print("digits.target: ")
     print(digits.target)
-    
+    l = list(digits.target)
+    print("number of 9s in digits.target: " +  str(l.count(9)))
+    cd = convert_class_labels(digits).count(9)
+    print("number of 9s in digits.target converted: " +  str(cd))
 
     # 1-nearest neighbor
-    print("--------------------------")
+    print("==========================")
     run_nearest_neighbor(digits)
     print("--------------------------")
     
