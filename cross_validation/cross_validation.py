@@ -35,6 +35,7 @@ def run_nearest_neighbor(X_digits, y_digits):
 
 	
 def run_decision_tree(X_digits, y_digits):
+    '''decision tree based on entropy, pipe into the following to sort by feature importance: grep "pix_pos" | sort -k2n '''
     print("RUNNING DECISION TREE...")
     clf = DecisionTreeClassifier("entropy")
     scores = cross_val_score(clf, X_digits, y_digits, cv=10)
@@ -50,24 +51,22 @@ def run_decision_tree(X_digits, y_digits):
 
     # display feature importance by pixel position
     print("pixel position | feature_importance")
-    f_names = []
+    pixel_positions = []
     rows, cols = 8, 8
     for i in range(rows):
         for j in range(cols):
-            f_names.append("pix_pos_" + str(i) + ":" + str(j))
-
-    for i in range(len(f_names)):
-        print(str(f_names[i]) + "      " + str(clf.feature_importances_[i]))
+            pixel_positions.append("pix_pos_" + str(i) + ":" + str(j))
+    for i in range(len(pixel_positions)):
+        print(str(pixel_positions[i]) + "      " + str(clf.feature_importances_[i]))
 
     # print out decision tree
     dotfile = StringIO()
     tree.export_graphviz(clf, out_file = dotfile, 
-                              feature_names = f_names, 
+                              feature_names = pixel_positions, 
                               rounded = True, 
                               class_names = ['-', '+'])
     graph = pydotplus.graph_from_dot_data(dotfile.getvalue())
     graph.write_pdf("digits_tree.pdf")
-
 #---run_decision_tree------------------------------------
 
 
@@ -81,6 +80,8 @@ def run_logistic_regression(X_digits, y_digits):
 
     clf.fit(X_digits, y_digits)
     print("coefficients: " + str(clf.coef_))
+    coef = clf.coef_[0]
+    print(len(coef))
 #---run_logistic_regression------------------------------------
 
 
@@ -106,7 +107,7 @@ def main():
     print("--------------------------")
 
     # logistic regression
-    #run_logistic_regression(X_digits, y_digits)
+    run_logistic_regression(X_digits, y_digits)
     print("--------------------------")
 
 if __name__ == '__main__':
