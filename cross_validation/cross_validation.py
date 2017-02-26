@@ -81,7 +81,17 @@ def run_logistic_regression(X_digits, y_digits):
     clf.fit(X_digits, y_digits)
     print("coefficients: " + str(clf.coef_))
     coef = clf.coef_[0]
-    print(len(coef))
+
+    # display feature importance by pixel position
+    print("pixel position | coefficient_importance")
+    pixel_positions = []
+    rows, cols = 8, 8
+    for i in range(rows):
+        for j in range(cols):
+            pixel_positions.append("pix_pos_" + str(i) + ":" + str(j))
+    for i in range(len(pixel_positions)):
+        print(str(pixel_positions[i]) + "      " + str(coef[i]))
+
 #---run_logistic_regression------------------------------------
 
 
