@@ -45,12 +45,12 @@ def run_decision_tree(X_digits, y_digits):
 
     # fit digits dataset to the decision tree and display clf attributes
     clf.fit(X_digits, y_digits)
-    print("classes_ : " + str(clf.classes_))    
-    print("n_features_ : " + str(clf.n_features_))
-    print("feature_importances_ : " + str(clf.feature_importances_))
+    #print("classes_ : " + str(clf.classes_))    
+    #print("n_features_ : " + str(clf.n_features_))
+    #print("feature_importances_ : " + str(clf.feature_importances_))
 
     # display feature importance by pixel position
-    print("pixel position | feature_importance")
+    print("pixel position -> feature_importance")
     pixel_positions = []
     rows, cols = 8, 8
     for i in range(rows):
@@ -79,11 +79,11 @@ def run_logistic_regression(X_digits, y_digits):
     display_accuracy(scores)
 
     clf.fit(X_digits, y_digits)
-    print("coefficients: " + str(clf.coef_))
+    #print("coefficients: " + str(clf.coef_))
     coef = clf.coef_[0]
 
     # display feature importance by pixel position
-    print("pixel position | coefficient_importance")
+    print("pixel position -> coefficient_importance")
     pixel_positions = []
     rows, cols = 8, 8
     for i in range(rows):
@@ -97,19 +97,19 @@ def run_logistic_regression(X_digits, y_digits):
 
 def main():
     digits = load_digits()
+    print("loading digits dataset...")
     print("digits.data.shape: " + str(digits.data.shape))
     print("digits.data: ")
     print(digits.data)
     print("digits.target: ")
     print(digits.target)
-    print(convert_class_labels(digits.target).count(1))
-    print(convert_class_labels(digits.target).count(0))
 
+    print("\nconverting digits.target for 2-class problem ('1' if 9, otherwise '0')...")
     X_digits, y_digits = digits.data, convert_class_labels(digits.target)
 
     # 1-nearest neighbor
     print("==========================")
-    #run_nearest_neighbor(X_digits, y_digits)
+    run_nearest_neighbor(X_digits, y_digits)
     print("--------------------------")
     
     # decision tree
