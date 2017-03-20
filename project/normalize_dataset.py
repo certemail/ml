@@ -14,11 +14,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # open json file containing all possible features and feature_values
+    print("All possible features and count of feature-values in dataset:")
     with open(args.all_possible_feature_value_filename) as data_file:
         data_set_features_values = json.load(data_file)
 
         for feature in data_set_features_values:
             print(feature + ": " + str(len(data_set_features_values[feature])))
+    print("--------------------------------------------------")
 
     # create output directory of normalized dataset
     # delete directory first if already exists
@@ -31,11 +33,11 @@ if __name__ == '__main__':
     # open every .json file and write normalized version to new folder
     for filename in glob.iglob(args.path_to_dataset + '/**/*.json', recursive=True):
         with open(filename) as data_file:
-            data = json.load(data_file)
+            data_to_normalize = json.load(data_file)
 
             # include only Zeus, Crypto, Locker, and APT1 
             # and ignore other malware families
-            lbl = data["properties"]["label"]
+            lbl = data_to_normalize["properties"]["label"]
             if not lbl == "APT1" and \
                not lbl == "Crypto" and \
                not lbl == "Locker" and \
@@ -45,3 +47,29 @@ if __name__ == '__main__':
 
             print("NORMALIZING: " + filename)
             
+            temp_normalized_dict = {}
+            properties = sorted((data_to_normalize["properties"]).keys())
+            for feature in properties:
+                # get vector length of this feature
+                vector_len = len(data_set_features_values[feature])
+
+                # initialize to all zeros  
+                temp_normalized_dict[feature] = list(map(lambda x: 0, range(vector_len)))
+    
+                # set indices to 0 or 1
+                feature_values_str = data_to_normalize["properties"][feature]
+                feature_values_list = [x for x in feature_values_str.split()]
+                for f_value in feature_values_list:
+                    # get index from dataset
+                    idx = data_set_features_values[feature].index(f_value)
+
+                    #print("feature: " + feature + " : " + "value " + f_value + " idx: " + str(idx))
+
+                    # set index to "1" since this feature-value is present
+                    temp_normalized_dict[feature][idx] = 1
+
+            # output normalized sample to file in new directory
+            normalized_filename =  os.path.splitext(os.path.basename(filename))[0] + "__normalized" + ".json"
+            normalized_filepath = os.path.join(args.path_to_normalized_dataset, normalized_filename)
+            with open(normalized_filepath, 'w') as outfile:
+                outfile.write(json.dumps(temp_normalized_dict, sort_keys=True, indent=4))
