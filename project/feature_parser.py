@@ -1,8 +1,6 @@
 import json
 import argparse
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("filename", help="path to feature-values")
@@ -30,3 +28,5 @@ if __name__ == '__main__':
         print("total features: " + str(len(data.items())))
         print("total features with non-zero values: " + str(counter_features))
         print("total features with zero values (unusable): " + str(len(features_with_no_values)))
+
+        # pipe output into: | sort -k2n
