@@ -5,7 +5,7 @@
 # when run on main dataset - result will be 15GB in size
 # output directory is "dataset_normalized"
 
-python malware_dataset_json_parser.py sample_dataset/ all_possible_features_and_values.json
+python malware_dataset_feature_and_value_extractor.py sample_dataset/ all_possible_features_and_values.json
 python normalize_dataset.py sample_dataset/ all_possible_features_and_values.json 
 
 
