@@ -30,9 +30,9 @@ import tensorflow as tf
 IMAGE_SIZE = 24
 
 # Global constants describing the CIFAR-10 data set.
-NUM_CLASSES = 10
-NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 50000
-NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 10000
+NUM_CLASSES = 10 # TODO NEED TO UPDATE AND CHANGE To 2 CLASSES
+NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN = 10000   
+NUM_EXAMPLES_PER_EPOCH_FOR_EVAL = 2000    
 
 
 def read_cifar10(filename_queue):
@@ -148,11 +148,15 @@ def distorted_inputs(data_dir, batch_size):
     images: Images. 4D tensor of [batch_size, IMAGE_SIZE, IMAGE_SIZE, 3] size.
     labels: Labels. 1D tensor of [batch_size] size.
   """
-  filenames = [os.path.join(data_dir, 'data_batch_%d.bin' % i)
+  filenames = [os.path.join(data_dir, 'data_batch_%d__only_birds_and_horses.bin' % i)
                for i in xrange(1, 6)]
   for f in filenames:
     if not tf.gfile.Exists(f):
       raise ValueError('Failed to find file: ' + f)
+  
+  print("filenames to be queued: ")
+  for f in filenames:
+    print(f)
 
   # Create a queue that produces the filenames to read.
   filename_queue = tf.train.string_input_producer(filenames)
@@ -213,11 +217,11 @@ def inputs(eval_data, data_dir, batch_size):
     labels: Labels. 1D tensor of [batch_size] size.
   """
   if not eval_data:
-    filenames = [os.path.join(data_dir, 'data_batch_%d.bin' % i)
+    filenames = [os.path.join(data_dir, 'data_batch_%d__only_birds_and_horses.bin' % i)
                  for i in xrange(1, 6)]
     num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN
   else:
-    filenames = [os.path.join(data_dir, 'test_batch.bin')]
+    filenames = [os.path.join(data_dir, 'test_batch__only_birds_and_horses.bin')]
     num_examples_per_epoch = NUM_EXAMPLES_PER_EPOCH_FOR_EVAL
 
   for f in filenames:
