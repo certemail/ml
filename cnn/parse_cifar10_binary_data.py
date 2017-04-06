@@ -1,158 +1,90 @@
-#!/usr/bin/python3.4
+#!/usr/bin/env python
 
 import os
 import shutil
 import argparse
+import glob
 
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("cifar10_data_bin_file", help="binary file to be modified")
-    args = parser.parse_args()
-
-    data_bin_file = args.cifar10_data_bin_file
-    if not os.path.exists(data_bin_file):
-        print("file does not exist")
-        exit(1)
-
+def rebuild(path_to_training_images):
     label_size = 1         
     image_size = 3072   #3072
     record_size = label_size + image_size 
 
-    offset = 0
+    # delete older processed files
+    for old_file in glob.iglob(path_to_training_images + '/**/*__only*.bin', recursive=True):
+        print("deleting " + str(old_file))
+        os.remove(old_file)
 
-    new_byte_array = bytearray() 
-    num_birds = 0
-    num_horses = 0
-    num_other_records = 0
+    for data_bin_file in glob.iglob(path_to_training_images + '/**/*.bin', recursive=True):
+        with open(data_bin_file, 'rb') as f:
+            # read in entire file into a byte array
+            b_arr = f.read()	
+            num_bytes_in_file = len(b_arr)
+            print("num bytes in file: " + str(num_bytes_in_file))
 
-    with open(data_bin_file, 'rb') as f:
-	
-	# read in entire file into a byte array
-        b_arr = f.read()	
-        num_bytes_in_file = len(b_arr)
-        print("num bytes in file: " + str(num_bytes_in_file))
+            offset = 0
+            num_birds = 0
+            num_horses = 0
+            num_other_records = 0
+            new_byte_array = bytearray() 
 
-        while offset < num_bytes_in_file:
-            label = b_arr[offset]
-            print("label: " + str(hex(label)))	
+            while offset < num_bytes_in_file:
+                label = b_arr[offset]
+                print("label: " + str(hex(label)))	
 
-            # label is BIRD 
-            if label == 0x2:
-                print("\tFOUND A BIRD" + str(label))
-                new_label = 0x0
-                sliced_record = bytearray([new_label])
-                slice_obj = slice(offset+1, offset+record_size)
-                sliced_record.extend(b_arr[slice_obj])
-                
-                #print("\tsliced record: " + str(sliced_record))
-                new_byte_array.extend(sliced_record)
-                num_birds += 1
+                # label is BIRD 
+                if label == 0x2:
+                    print("\tFOUND A BIRD")
+                    new_label = 0x0
+                    sliced_record = bytearray([new_label])
+                    slice_obj = slice(offset+1, offset+record_size)
+                    sliced_record.extend(b_arr[slice_obj])
+                    
+                    #print("\tsliced record: " + str(sliced_record))
+                    new_byte_array.extend(sliced_record)
+                    num_birds += 1
 
-            # label is HORSE
-            elif label == 0x7:
-                print("\tFOUND A HORSE" + str(label))
-                new_label = 0x1
-                sliced_record = bytearray([new_label])
-                slice_obj = slice(offset+1, offset+record_size)
-                sliced_record.extend(b_arr[slice_obj])
-                
-                #print("\tsliced record: " + str(sliced_record))
-                new_byte_array.extend(sliced_record)
-                num_horses += 1
+                # label is HORSE
+                elif label == 0x7:
+                    print("\tFOUND A HORSE")
+                    new_label = 0x1
+                    sliced_record = bytearray([new_label])
+                    slice_obj = slice(offset+1, offset+record_size)
+                    sliced_record.extend(b_arr[slice_obj])
+                    
+                    #print("\tsliced record: " + str(sliced_record))
+                    new_byte_array.extend(sliced_record)
+                    num_horses += 1
 
-            else:
-                num_other_records += 1
-             
-            # advance to next record 
-            offset = offset + record_size
-            print("offset: " + str(offset) + " (" + hex(offset) + ")" )
-            print("----------------------")
+                else:
+                    num_other_records += 1
+                 
+                # advance to next record 
+                offset = offset + record_size
+                print("offset: " + str(offset) + " (" + hex(offset) + ")" )
+                print("----------------------")
 
-    print("======================")
-    #print("extracted records: " + str(new_byte_array))
+        print("======================")
+        #print("extracted records: " + str(new_byte_array))
 
-    # write out new bytes to file
-    print("total number of birds: " + str(num_birds))
-    print("total number of horses: " + str(num_horses))
-    print("total number of other records: " + str(num_other_records))
-    outfile = os.path.splitext(data_bin_file)[0] + "__only_birds_and_horses.bin"
-    print("writing extracted records to: " + str(outfile))
-    with open(outfile, 'wb') as f:
-        f.write(new_byte_array)
-	
-        #f.seek(offset)
-        #print("file pointer at: " + str(hex(f.tell())))
-        #label = bytearray(f.read(label_size))
+        # write out new bytes to file
+        print("total number of birds: " + str(num_birds))
+        print("total number of horses: " + str(num_horses))
+        print("total number of other records: " + str(num_other_records))
+        outfile = os.path.splitext(data_bin_file)[0] + "__only_birds_and_horses.bin"
+        print("writing extracted records to: " + str(outfile))
+        with open(outfile, 'wb') as f:
+            f.write(new_byte_array)
+        print("~~~~~~~~~~~~~~~~~~~~~~~")
+        print("~~~~~~~~~~~~~~~~~~~~~~~")
 
-        ### only keep bird and horse labels (2 and 7)
-        #if label[0] == 0x2 or label[0] == 0x7:
-        #    print("found it")
-        #    print(label)
-        #else:
-        #    print("not bird or horse")
-        #    print(label) 
-#
-#    exe_file = args.executable_filename
-#    if not os.path.exists(exe_file):
-#        print(f + "does not exist...exiting")
-#        exit(1)
-#
-#    encrypted_filename = exe_file + "_encrypted"
-#
-#    # delete encrypted file if already exists
-#    if os.path.exists(encrypted_filename):
-#        print("deleting: ", encrypted_filename)
-#        os.remove(encrypted_filename)
-#
-#    # copy and rename new file with encrypted_filename
-#    shutil.copy(exe_file, encrypted_filename) 
-#
-#
-#    # decode file offset hex strings as integers
-#    s_offset = int.from_bytes(bytes.fromhex(args.start_offset), byteorder='big')
-#    e_offset = int.from_bytes(bytes.fromhex(args.end_offset), byteorder='big')
-#    num_bytes_to_change = e_offset - s_offset
-#
-#    print("file offset start: ", hex(s_offset))
-#    print("file offset end:   ", hex(e_offset))
-#    print("number of bytes to overwrite: ", num_bytes_to_change)
-#    print()
-#	
-#    with open(encrypted_filename, 'rb+') as f:
-#
-#        # seek to offset in file
-#        print("seeking to start position...")
-#        f.seek(s_offset)
-#
-#        print("file pointer at: " + str(hex(f.tell())))
-#
-#        # get bytes to be encrypted
-#        b_arr = bytearray(f.read(num_bytes_to_change))
-#        
-#        print("-----------")
-#        print("bytes to be encrypted: ")
-#        print(b_arr)
-#        print("-----------")
-#
-#        xor_key = 0xCC
-#        for i in range(len(b_arr)):
-#            b_arr[i] ^= xor_key
-#
-#        print("bytes after encryption:")
-#        print(b_arr) 
-#        print("-----------")
-#        print("file pointer at: " + str(hex(f.tell())))
-#
-#        # reset file pointer
-#        print("reseting file back to start: ", str(hex(s_offset)))
-#        f.seek(s_offset)
-#
-#        print()
-#        print("writing encrypted bytes back to disk...") 
-#        f.write(b_arr)
-#        f.flush()
-#
-#
-#
-#
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path_to_training_images", help="path to cifar10 data")
+    args = parser.parse_args()
+
+    if not os.path.exists(args.path_to_training_images):
+        print("file path does not exist")
+        exit(1)
+
+    rebuild(args.path_to_training_images)
