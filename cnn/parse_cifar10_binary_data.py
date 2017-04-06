@@ -22,7 +22,8 @@ if __name__ == "__main__":
     offset = 0
 
     new_byte_array = bytearray() 
-    num_birds_and_horses = 0
+    num_birds = 0
+    num_horses = 0
     num_other_records = 0
 
     with open(data_bin_file, 'rb') as f:
@@ -36,15 +37,30 @@ if __name__ == "__main__":
             label = b_arr[offset]
             print("label: " + str(hex(label)))	
 
-            # label is a bird or horse, extract record
-            if label == 0x2 or label == 0x7:
-                print("\tFOUND IT" + str(label))
-                slice_obj = slice(offset, offset+record_size)
-                #TODO SET LABEL TO 0 FOR BIRD, and 1 TO HORSE
-                sliced_record = b_arr[slice_obj]
+            # label is BIRD 
+            if label == 0x2:
+                print("\tFOUND A BIRD" + str(label))
+                new_label = 0x0
+                sliced_record = bytearray([new_label])
+                slice_obj = slice(offset+1, offset+record_size)
+                sliced_record.extend(b_arr[slice_obj])
+                
                 #print("\tsliced record: " + str(sliced_record))
                 new_byte_array.extend(sliced_record)
-                num_birds_and_horses += 1
+                num_birds += 1
+
+            # label is HORSE
+            elif label == 0x7:
+                print("\tFOUND A HORSE" + str(label))
+                new_label = 0x1
+                sliced_record = bytearray([new_label])
+                slice_obj = slice(offset+1, offset+record_size)
+                sliced_record.extend(b_arr[slice_obj])
+                
+                #print("\tsliced record: " + str(sliced_record))
+                new_byte_array.extend(sliced_record)
+                num_horses += 1
+
             else:
                 num_other_records += 1
              
@@ -57,7 +73,8 @@ if __name__ == "__main__":
     #print("extracted records: " + str(new_byte_array))
 
     # write out new bytes to file
-    print("total number of birds and horses: " + str(num_birds_and_horses))
+    print("total number of birds: " + str(num_birds))
+    print("total number of horses: " + str(num_horses))
     print("total number of other records: " + str(num_other_records))
     outfile = os.path.splitext(data_bin_file)[0] + "__only_birds_and_horses.bin"
     print("writing extracted records to: " + str(outfile))
