@@ -1,0 +1,6 @@
+changes from original cifar10 CNN code:
+-preprocessed cifar10 binary dataset 
+  * custom python library to parse each data_batch_bin file and extract only bird and horse records (rebuild_cifar10_binary_dataset.py)
+  * reduced number of steps from 100K to 10,000 
+  * download and extraction of cifar10 dataset is to the current working directory (no longer to /tmp)
+  * changed global constants in cifar10_input.py to reflect change from 10 classes to 2 classes
