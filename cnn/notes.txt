@@ -1,6 +1,30 @@
-changes from original cifar10 CNN code:
--preprocessed cifar10 binary dataset 
-  * custom python library to parse each data_batch_bin file and extract only bird and horse records (rebuild_cifar10_binary_dataset.py)
-  * reduced number of steps from 100K to 10,000 
-  * download and extraction of cifar10 dataset is to the current working directory (no longer to /tmp)
-  * changed global constants in cifar10_input.py to reflect change from 10 classes to 2 classes
+SUMMARY:
+The objective of this assignment is to modify to cifar10 image dataset to classify only birds and horses using a convolutional neural network.  
+Additionally, the original tutorial code was changed to intentionally decrease accuracy.  Three modifications to the code were made, which included 
+1) the removal of image distortions, 2) removal of the second convolutional network along with pooling and normalization associated with that layer,
+and 3) combination of image distortion and convolutional neural network removal
+
+In order to modify the CNN to classify only birds and horses, the cifar10 dataset was preprocessed prior to input into the network.
+The following is a summary of the changes were made to achieve this:
+  - a custom python library was written to parse each data_batch_bin file and extract only bird and horse records (rebuild_cifar10_binary_dataset.py). this library is called from cifar10_train.py immediately following the dataset download and extraction
+  - changed global constants in cifar10_input.py to reflect change from 10 classes to 2 classes
+
+Other changes were made for convenience:
+  - download and extraction of cifar10 dataset is to the current working directory (no longer to /tmp)
+  - reduced number of steps from 100K to 10,000 to cut down the amount of time to run the classifier
+  
+INITIAL ACCURACY:
+In order to execute the classifier with the baseline initial accuracy on the classification of only birds and horses:
+% ] python cifar10_train.py
+
+The baseline execution took ___ hours and ___ minutes and achieved an accuracy of _____
+
+{{{--insert Tensorflow screenshot--}}}
+
+MODIFICATION #1:
+
+
+MODIFICATION #2:
+
+
+MODIFICATION #3:
