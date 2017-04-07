@@ -44,6 +44,7 @@ from six.moves import urllib
 import tensorflow as tf
 
 import cifar10_input
+import rebuild_cifar10_binary_dataset
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -397,3 +398,14 @@ def maybe_download_and_extract():
   extracted_dir_path = os.path.join(dest_directory, 'cifar-10-batches-bin')
   if not os.path.exists(extracted_dir_path):
     tarfile.open(filepath, 'r:gz').extractall(dest_directory)
+
+def rebuild_dataset():
+  image_directory = os.path.join(FLAGS.data_dir, 'cifar-10-batches-bin')
+  if not os.path.exists(image_directory):
+    print(image_directory + " does not exist")
+  rebuild_cifar10_binary_dataset.rebuild(image_directory)
+
+
+
+
+

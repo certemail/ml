@@ -117,6 +117,10 @@ def main(argv=None):  # pylint: disable=unused-argument
   if tf.gfile.Exists(FLAGS.train_dir):
     tf.gfile.DeleteRecursively(FLAGS.train_dir)
   tf.gfile.MakeDirs(FLAGS.train_dir)
+
+  # rebuild cifar10 dataset for only bird and horse images
+  cifar10.rebuild_dataset() 
+
   train()
 
 
