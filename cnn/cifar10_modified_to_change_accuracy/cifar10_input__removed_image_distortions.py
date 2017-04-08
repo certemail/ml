@@ -168,15 +168,18 @@ def distorted_inputs(data_dir, batch_size):
   height = IMAGE_SIZE
   width = IMAGE_SIZE
 
+  # pass through without any distortions applied to image
+  not_distorted_image = tf.image.resize_image_with_crop_or_pad(reshaped_image, height, width)
+
   # Image processing for training the network. Note the many random 
   # distortions applied to the image.
-
-  # Randomly crop a [height, width] section of the image.
-  distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
-
+  #
+  # OFF - Randomly crop a [height, width] section of the image.
+  #distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
+  #
   # OFF - Randomly flip the image horizontally.
   #distorted_image = tf.image.random_flip_left_right(distorted_image)
-
+  #
   # OFF - Because these operations are not commutative, consider randomizing
   # the order their operation.
   #distorted_image = tf.image.random_brightness(distorted_image,
@@ -185,7 +188,7 @@ def distorted_inputs(data_dir, batch_size):
   #                                           lower=0.2, upper=1.8)
 
   # Subtract off the mean and divide by the variance of the pixels.
-  float_image = tf.image.per_image_standardization(distorted_image)
+  float_image = tf.image.per_image_standardization(not_distorted_image)
 
   # Set the shapes of tensors.
   float_image.set_shape([height, width, 3])
