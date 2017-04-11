@@ -1,0 +1,4 @@
+reg_read
+api_resolv
+reg_write
+bad_feature
