@@ -47,6 +47,7 @@ def build_matrix_from_selected_features(path_to_dataset, path_to_list_of_feature
                 print(feature)
 
                 # TODO include a sanity check to gracefully handle the case where the json file does not have a feature
+                # does not have a feature - abort? or just add in a vector of all zeros for that missing feature?
                 if feature not in malware_sample:
                     print("WARNING: " + feature + " NOT present in " + filename)
                     continue
