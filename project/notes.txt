@@ -7,7 +7,7 @@
 
 python malware_dataset_feature_and_value_extractor.py sample_dataset/ all_possible_features_and_values.json
 python normalize_dataset.py sample_dataset/ all_possible_features_and_values.json 
-
+python combine_feature_vectors_and_build_model.py dataset_normalized/ all_possible_features_and_values.json features_to_train.txt
 
 # ---useful commands for json file manipulation 
 # extract field from json file:
