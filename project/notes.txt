@@ -1,6 +1,7 @@
 # how to run:
 # the first script will collect all of the possible features and values in the entire dataset
 # the second script will then normalize the dataset (convert each value into a vector of 1 or 0)
+# the third script will build a 2-D matrix of data from the normalized dataset (of whatever subset of features is desired), which can then be used in the model for training
 # can use the small sample_dataset/ folder with 3 files for testing (eventually run on main dataset)
 # when run on main dataset - result will be 15GB in size
 # output directory is "dataset_normalized"
