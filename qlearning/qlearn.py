@@ -79,29 +79,50 @@ def choose_action(current_state):
         return action
 
 def execute_action(current_state, action):
+#returns the next state (grid cell) after moving
     print("execute_action()...")
     print('\tpreparing to execute action {} from current state {}'.format(action, current_state))
     x,y = convert_current_state_to_coordinates(current_state)
 
+    # move UP
     if action == 'UP':
         print('\tchecking moving up:    ({},{})'.format(x-1, y))
         if x-1 < 0:
-            print("\t\tin top row, can't move up!")
+            print("\t\tin top row, can't move up! staying in same cell...")
+            return(current_state)
+        else:
+            return(convert_coordinates_to_current_state(x-1, y))
 
+    # move DOWN
     elif action == 'DOWN':    
         print('\tchecking moving down:  ({},{})'.format(x+1, y))
         if x+1 > NUM_ROWS -1:
-            print("\t\tin last row, can't move down!")
+            print("\t\tin last row, can't move down! staying in same cell...")
+            return(current_state)
+        else:
+            return(convert_coordinates_to_current_state(x+1, y))
 
+    # move LEFT
     elif action == 'LEFT':
         print('\tchecking moving left:  ({},{})'.format(x, y-1))
         if y-1 < 0:
-            print("\t\tin left-most column, can't move left!")
+            print("\t\tin left-most column, can't move left! staying in same cell...")
+            return(current_state)
+        else:
+            return(convert_coordinates_to_current_state(x, y-1))
 
+    # move RIGHT
     elif action == 'RIGHT':
         print('\tchecking moving right: ({},{})'.format(x, y+1))
         if y+1 > NUM_COLS-1:
-            print("\t\tin right-most column, can't move right!")
+            print("\t\tin right-most column, can't move right! staying same cell...")
+            return(current_state)
+        else:
+            return(convert_coordinates_to_current_state(x, y+1))
+
+def compute_immediate_reward_and_update_q_table(current_state, action, new_state):
+    print("compute_immediate_reward_and_update_q_table()...")
+    #TODO
 
 if __name__ == '__main__':
     # initialize grid
@@ -133,9 +154,17 @@ if __name__ == '__main__':
         action = choose_action(current_state)
         print("action selected: " + action)
 
-        # execute action
-        execute_action(current_state, action)
+        # execute action to determine what the new state will be
+        new_state = execute_action(current_state, action)
+        new_row, new_col = convert_current_state_to_coordinates(new_state) 
+        print('new state after executing action: {} ({},{}) '.format(new_state, new_row, new_col))
 
-        # receive immediate reward
+        # compute immediate reward and update the q-table entry for the current state
+        compute_immediate_reward_and_update_q_table(current_state, action, new_state)
+        
+        # move to the new state now 
+        #current_state = new_state
 
-        # update q_table
+
+
+
