@@ -4,8 +4,8 @@
 NUM_POSSIBLE_ACTIONS = 4
 
 # grid dimensions
-NUM_ROWS = 15 
-NUM_COLS = 15
+NUM_ROWS = 5 
+NUM_COLS = 5
 
 # rewards
 REWARD_ON_EXIT = 1.0
@@ -27,10 +27,21 @@ NUM_EPISODES = 1
 def display_grid(grid_world):
     for row in grid_world:
         print(row)
+    #temp = grid_world
+    #counter = 0
+    #for i in range(NUM_ROWS):
+    #    for j in range(NUM_COLS):
+    #        temp[i][j] = counter
+    #        counter += 1
+    #    print(temp[i])
+    print("------------")
 
 def display_q_table(q_table):
+    counter = 0
     for row in q_table:
-        print(row)
+        print("state " + str(counter) + ":" + str(row))
+        counter += 1
+    print("------------")
 
 def convert_current_state_to_coordinates(current_state):
     row = current_state // NUM_ROWS
@@ -41,11 +52,33 @@ def convert_coordinates_to_current_state(row, col):
     return (row * NUM_ROWS + col)
 
 def choose_action(current_state):
+    print("choosing action...")
+    x,y = convert_current_state_to_coordinates(current_state)
+    print('available moves for: ({},{})'.format(x,y)) 
+
+    # move up
+    print('\tchecking moving up:    ({},{})'.format(x-1, y))
+    if x-1 < 0:
+        print("\t\tin top row, can't move up!")
+        
+    # move down
+    print('\tchecking moving down:  ({},{})'.format(x+1, y))
+    if x+1 > NUM_ROWS -1:
+        print("\t\tin last row, can't move down!")
+
+    # move left
+    print('\tchecking moving left:  ({},{})'.format(x, y-1))
+    if y-1 < 0:
+        print("\t\tin left-most column, can't move left!")
+
+    # move right
+    print('\tchecking moving right: ({},{})'.format(x, y+1))
+    if y+1 > NUM_COLS-1:
+        print("\t\tin right-most column, can't move right!")
+
     pass
 
 if __name__ == '__main__':
-    print("starting grid world...")
-
     # initialize grid
     print("initializing grid...")
     grid_world = [[0.0 for col in range(NUM_COLS)] for row in range(NUM_ROWS)]
