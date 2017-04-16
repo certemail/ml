@@ -24,22 +24,24 @@ PENALTY_COL = END_STATE_COL
 
 # number of episodes to train
 NUM_EPISODES = 1
+
+GAMMA = 0.9
+LEARNING_RATE = 0.5
+
+# initialize goal state (lower-right-hand corner)
+GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
+GOAL_STATE_VALUE = 0
+
 #----------------------------------
 
 def display_grid(grid_world):
     for row in grid_world:
         print(row)
-    #temp = grid_world
-    #counter = 0
-    #for i in range(NUM_ROWS):
-    #    for j in range(NUM_COLS):
-    #        temp[i][j] = counter
-    #        counter += 1
-    #    print(temp[i])
     print("------------")
 
 def display_q_table(q_table):
     counter = 0
+    print('\t  {} | {} | {} | {}'.format('UP', 'DOWN', 'LEFT', 'RIGHT'))
     for row in q_table:
         print("state " + str(counter) + ":" + str(row))
         counter += 1
@@ -78,10 +80,9 @@ def choose_action(current_state):
         action = POSSIBLE_ACTIONS[idx]        
         return action
 
-def execute_action(current_state, action):
+def get_next_state(current_state, action):
 #returns the next state (grid cell) after moving
-    print("execute_action()...")
-    print('\tpreparing to execute action {} from current state {}'.format(action, current_state))
+    print("get_next_state()...")
     x,y = convert_current_state_to_coordinates(current_state)
 
     # move UP
@@ -120,9 +121,51 @@ def execute_action(current_state, action):
         else:
             return(convert_coordinates_to_current_state(x, y+1))
 
-def compute_immediate_reward_and_update_q_table(current_state, action, new_state):
+def compute_immediate_reward_and_update_q_table(previous_state, action_taken, new_state):
+    global GOAL_STATE_VALUE
     print("compute_immediate_reward_and_update_q_table()...")
-    #TODO
+    print('\tprevious state: {}, action taken: {}, new state: {}'.format(previous_state, action_taken, new_state))
+
+    # reached the terminal state
+    if new_state == GOAL_STATE:
+        print("\tnew_state is goal_state!")
+        act_action_idx = POSSIBLE_ACTIONS.index(action_taken)
+        print('\tindex into q entry for {} is: {}'.format(action_taken, act_action_idx))
+        previous_state_q_value_for_action_just_taken = q_table[previous_state][act_action_idx]
+        print('\tprevious_state_q_value_for_action_just_taken is: {}'.format(previous_state_q_value_for_action_just_taken))
+
+        # compute new q-value (using GOAL_STATE_VALUE as 'q_value' for terminal state)
+        new_q_value_for_previous_state = previous_state_q_value_for_action_just_taken + \
+                                            (LEARNING_RATE * (REWARD_FOR_MAKING_ANY_MOVE + (GAMMA * GOAL_STATE_VALUE) - previous_state_q_value_for_action_just_taken))
+        
+        print('updated q-value {}'.format(new_q_value_for_previous_state))
+
+        # update q-table for previous state for the action just taken
+        q_table[previous_state][act_action_idx] = new_q_value_for_previous_state
+
+        # update utility value for goal state
+        GOAL_STATE_VALUE = GOAL_STATE_VALUE + \
+                                            (LEARNING_RATE * (REWARD_ON_EXIT + (GAMMA * GOAL_STATE_VALUE) - GOAL_STATE_VALUE))
+        print('updated utility value for goal state is: {}'.format(GOAL_STATE_VALUE))
+
+    # regular update (terminal state not reached)
+    else:
+        print('\tq entry for new state {} is: {}'.format(new_state, q_table[new_state]))
+        max_q_of_new_state = max(q_table[new_state])
+
+        act_action_idx = POSSIBLE_ACTIONS.index(action_taken)
+        print('\tindex into q entry for {} is: {}'.format(action_taken, act_action_idx))
+        previous_state_q_value_for_action_just_taken = q_table[previous_state][act_action_idx]
+        print('\tprevious_state_q_value_for_action_just_taken is: {}'.format(previous_state_q_value_for_action_just_taken))
+
+        # compute new q-value
+        new_q_value_for_previous_state = previous_state_q_value_for_action_just_taken + \
+                                            (LEARNING_RATE * (REWARD_FOR_MAKING_ANY_MOVE + (GAMMA * max_q_of_new_state) - previous_state_q_value_for_action_just_taken))
+
+        print('updated q-value {}'.format(new_q_value_for_previous_state))
+
+        # update q-table for previous state for the action just taken
+        q_table[previous_state][act_action_idx] = new_q_value_for_previous_state
 
 if __name__ == '__main__':
     # initialize grid
@@ -141,30 +184,31 @@ if __name__ == '__main__':
     q_table = [[0.0 for col in range(NUM_POSSIBLE_ACTIONS)] for row in range(NUM_ROWS_IN_Q_TABLE)]
     display_q_table(q_table)
 
-    # initialize current state (upper left-hand corner at (0,0))
-    current_state = 0 
-
     for i in range(NUM_EPISODES):
 
-        # observe current state
-        row, col = convert_current_state_to_coordinates(current_state)
-        print('current state: {} [position in grid: ({}, {})]'.format(current_state, row, col))
+        # start from beginning (upper left-hand corner at (0,0))
+        current_state = 0
 
-        # select an action 
-        action = choose_action(current_state)
-        print("action selected: " + action)
+        while(current_state != GOAL_STATE):
+            # observe current state
+            row, col = convert_current_state_to_coordinates(current_state)
+            print('current state: {} [position in grid: ({}, {})]'.format(current_state, row, col))
 
-        # execute action to determine what the new state will be
-        new_state = execute_action(current_state, action)
-        new_row, new_col = convert_current_state_to_coordinates(new_state) 
-        print('new state after executing action: {} ({},{}) '.format(new_state, new_row, new_col))
+            # select an action 
+            action = choose_action(current_state)
+            print("action selected: " + action)
 
-        # compute immediate reward and update the q-table entry for the current state
-        compute_immediate_reward_and_update_q_table(current_state, action, new_state)
-        
-        # move to the new state now 
-        #current_state = new_state
+            # determine what the new state will be
+            new_state = get_next_state(current_state, action)
+            new_row, new_col = convert_current_state_to_coordinates(new_state) 
+            print('moving to new state: {} ({},{}) '.format(new_state, new_row, new_col))
+            # save current_state in order to update q-table
+            previous_state = current_state
 
+            # compute immediate reward and update the q-table entry for the current state
+            compute_immediate_reward_and_update_q_table(previous_state, action, new_state)
+            display_q_table(q_table)
 
-
+            # move to the new state now 
+            current_state = new_state
 
