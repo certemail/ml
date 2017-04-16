@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+import random
 
 #----------------------------------
 NUM_POSSIBLE_ACTIONS = 4
+POSSIBLE_ACTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT']
 
 # grid dimensions
 NUM_ROWS = 5 
@@ -52,31 +54,54 @@ def convert_coordinates_to_current_state(row, col):
     return (row * NUM_ROWS + col)
 
 def choose_action(current_state):
-    print("choosing action...")
+    print("choose_action()...")
     x,y = convert_current_state_to_coordinates(current_state)
-    print('available moves for: ({},{})'.format(x,y)) 
+    print('\tq-values for current state {} ({},{}) are: {}'.format(current_state, x, y, q_table[current_state])) 
 
-    # move up
-    print('\tchecking moving up:    ({},{})'.format(x-1, y))
-    if x-1 < 0:
-        print("\t\tin top row, can't move up!")
-        
-    # move down
-    print('\tchecking moving down:  ({},{})'.format(x+1, y))
-    if x+1 > NUM_ROWS -1:
-        print("\t\tin last row, can't move down!")
+    # get max q-value for the current state
+    max_q_value = max(q_table[current_state])
+    count = q_table[current_state].count(max_q_value)
+    print('\tmax q-value: {} appears {} times'.format(max_q_value, count))
 
-    # move left
-    print('\tchecking moving left:  ({},{})'.format(x, y-1))
-    if y-1 < 0:
-        print("\t\tin left-most column, can't move left!")
+    # if max_q_value exists for more than one action, randomly select an action
+    if count > 1:
+        print('\tneed to choose random action with max q-value')
+        indices_with_max_q_value = [i for i in range(NUM_POSSIBLE_ACTIONS) if q_table[current_state][i] == max_q_value]
+        print('\tindicies that have max_q_value: {}'.format(indices_with_max_q_value))
+        idx = random.choice(indices_with_max_q_value)
+        action = POSSIBLE_ACTIONS[idx]
+        print('\trandom action selected from max q value: {}'.format(action))
+        return action
+    else:
+        # get index of max_q_value
+        idx = q_table[current_state].index(max_q_value)
+        action = POSSIBLE_ACTIONS[idx]        
+        return action
 
-    # move right
-    print('\tchecking moving right: ({},{})'.format(x, y+1))
-    if y+1 > NUM_COLS-1:
-        print("\t\tin right-most column, can't move right!")
+def execute_action(current_state, action):
+    print("execute_action()...")
+    print('\tpreparing to execute action {} from current state {}'.format(action, current_state))
+    x,y = convert_current_state_to_coordinates(current_state)
 
-    pass
+    if action == 'UP':
+        print('\tchecking moving up:    ({},{})'.format(x-1, y))
+        if x-1 < 0:
+            print("\t\tin top row, can't move up!")
+
+    elif action == 'DOWN':    
+        print('\tchecking moving down:  ({},{})'.format(x+1, y))
+        if x+1 > NUM_ROWS -1:
+            print("\t\tin last row, can't move down!")
+
+    elif action == 'LEFT':
+        print('\tchecking moving left:  ({},{})'.format(x, y-1))
+        if y-1 < 0:
+            print("\t\tin left-most column, can't move left!")
+
+    elif action == 'RIGHT':
+        print('\tchecking moving right: ({},{})'.format(x, y+1))
+        if y+1 > NUM_COLS-1:
+            print("\t\tin right-most column, can't move right!")
 
 if __name__ == '__main__':
     # initialize grid
@@ -92,7 +117,7 @@ if __name__ == '__main__':
     NUM_ROWS_IN_Q_TABLE = (NUM_ROWS * NUM_ROWS) - 1
     print("initializing q table...")
     print("number of rows in q-table: " + str(NUM_ROWS_IN_Q_TABLE))
-    q_table = [[0 for col in range(NUM_POSSIBLE_ACTIONS)] for row in range(NUM_ROWS_IN_Q_TABLE)]
+    q_table = [[0.0 for col in range(NUM_POSSIBLE_ACTIONS)] for row in range(NUM_ROWS_IN_Q_TABLE)]
     display_q_table(q_table)
 
     # initialize current state (upper left-hand corner at (0,0))
@@ -105,9 +130,11 @@ if __name__ == '__main__':
         print('current state: {} [position in grid: ({}, {})]'.format(current_state, row, col))
 
         # select an action 
-        choose_action(current_state)
+        action = choose_action(current_state)
+        print("action selected: " + action)
 
         # execute action
+        execute_action(current_state, action)
 
         # receive immediate reward
 
