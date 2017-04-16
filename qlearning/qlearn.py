@@ -4,8 +4,8 @@
 NUM_POSSIBLE_ACTIONS = 4
 
 # grid dimensions
-NUM_ROWS = 15 #3
-NUM_COLS = 15 #4
+NUM_ROWS = 15 
+NUM_COLS = 15
 
 # rewards
 REWARD_ON_EXIT = 1.0
@@ -13,12 +13,12 @@ REWARD_IN_PENALTY_SQUARE = -1.0
 REWARD_FOR_MAKING_ANY_MOVE = -0.04
 
 # exit state position
-END_STATE_ROW = NUM_ROWS - 1 #0
-END_STATE_COL = NUM_COLS - 1 #3
+END_STATE_ROW = NUM_ROWS - 1 
+END_STATE_COL = NUM_COLS - 1 
 
 # penalty position
-PENALTY_ROW = END_STATE_ROW - 1 #1
-PENALTY_COL = END_STATE_COL     #3
+PENALTY_ROW = END_STATE_ROW - 1 
+PENALTY_COL = END_STATE_COL    
 
 # number of episodes to train
 NUM_EPISODES = 1
@@ -35,7 +35,10 @@ def display_q_table(q_table):
 def convert_current_state_to_coordinates(current_state):
     row = current_state // NUM_ROWS
     col = current_state %  NUM_COLS
-    return row, col
+    return (row, col)
+
+def convert_coordinates_to_current_state(row, col):
+    return (row * NUM_ROWS + col)
 
 def choose_action(current_state):
     pass
@@ -66,7 +69,7 @@ if __name__ == '__main__':
 
         # observe current state
         row, col = convert_current_state_to_coordinates(current_state)
-        print('current position in grid: {}, {}'.format(row, col))
+        print('current state: {} [position in grid: ({}, {})]'.format(current_state, row, col))
 
         # select an action 
         choose_action(current_state)
