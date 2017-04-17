@@ -201,7 +201,7 @@ def compute_immediate_reward_and_update_q_table(previous_state, action_taken, ne
 #---compute_immediate_reward_and_update_q_table--------------------------------
 
 def calculate_optimal_policy(q_table):
-    print("calculating optimal policy...")
+    print("\ncalculating optimal policy...")
 
     # show q_table, rounded to 3 decimal places
     logging.info('final q_table:')
@@ -228,6 +228,20 @@ def calculate_optimal_policy(q_table):
         next_state = get_next_state(current_state, direction) 
         current_state = next_state
     return optimal_path
+
+def build_utility_matrix(q_table):
+    print("\nutility matrix:")
+    utility_values = []
+    for row in q_table:
+        utility_values.append(max(row))
+    utility_values.append(GOAL_STATE_VALUE)
+
+    counter = 0
+    for value in utility_values:
+        print('{:.3f}'.format(value), end=' ') 
+        counter += 1
+        if counter % NUM_COLS == 0:
+            print("\n")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -297,4 +311,4 @@ if __name__ == '__main__':
         print('state {} {}'.format(state, convert_current_state_to_coordinates(state)))
     print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
     
-
+    build_utility_matrix(q_table)
