@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import random
 
-#----------------------------------
+#----GLOBAL VARIABLES--------------------
 NUM_POSSIBLE_ACTIONS = 4
 POSSIBLE_ACTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT']
 
@@ -23,7 +23,7 @@ PENALTY_ROW = END_STATE_ROW - 1
 PENALTY_COL = END_STATE_COL    
 
 # number of episodes to train
-NUM_EPISODES = 1000
+NUM_EPISODES = 10000
 
 GAMMA = 0.9
 LEARNING_RATE = 0.5
@@ -32,8 +32,7 @@ EPSILON = 0.01
 # initialize goal state (lower-right-hand corner)
 GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
 GOAL_STATE_VALUE = 0.0
-
-#----------------------------------
+#----GLOBAL VARIABLES--------------------
 
 def display_grid(grid_world):
     for row in grid_world:
@@ -41,11 +40,13 @@ def display_grid(grid_world):
     print("------------")
 
 def display_q_table(q_table):
-    counter = 0
-    print('\t  {} | {} | {} | {}'.format('UP', 'DOWN', 'LEFT', 'RIGHT'))
+    # show q_table, rounded to 3 decimal places
+    state_number = 0
+    print('\t    {}      {}      {}      {}'.format('UP', 'DOWN', 'LEFT', 'RIGHT'))
     for row in q_table:
-        print("state " + str(counter) + ":" + str(row))
-        counter += 1
+        rounded_row = [ '%.3f' % round(elem, 3) for elem in row]
+        print("state " + str(state_number) + ":" + str(rounded_row) + "--> max Q: " + str(max(row)))
+        state_number += 1
     print("------------")
 
 def convert_current_state_to_coordinates(current_state):
@@ -218,4 +219,3 @@ if __name__ == '__main__':
 
             # move to the new state now 
             current_state = new_state
-
