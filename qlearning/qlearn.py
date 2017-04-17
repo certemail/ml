@@ -154,7 +154,6 @@ def get_next_state(current_state, action):
             return(convert_coordinates_to_current_state(x, y+1))
 #---get_next_state-------------------------------------------------------------
 
-
 def compute_immediate_reward_and_update_q_table(previous_state, action_taken, new_state):
     global GOAL_STATE_VALUE
     logging.debug("compute_immediate_reward_and_update_q_table()...")
@@ -201,6 +200,34 @@ def compute_immediate_reward_and_update_q_table(previous_state, action_taken, ne
         q_table[previous_state][act_action_idx] = new_q_value_for_previous_state
 #---compute_immediate_reward_and_update_q_table--------------------------------
 
+def calculate_optimal_policy(q_table):
+    print("calculating optimal policy...")
+
+    # show q_table, rounded to 3 decimal places
+    logging.info('final q_table:')
+    logging.info("------------")
+    state_number = 0
+    logging.info('\t          {}      {}      {}      {}'.format('UP', 'DOWN', 'LEFT', 'RIGHT'))
+    for row in q_table:
+        rounded_row = [ '%.3f' % elem for elem in row]
+        logging.info('state {}: {} --> max-q: {:.3f}'.format(state_number, rounded_row, max(row)))
+        state_number += 1
+    logging.info("------------")
+
+    optimal_path = []
+    start_state = 0
+
+    current_state = start_state
+    while current_state != GOAL_STATE:
+        optimal_path.append(current_state)
+        row = q_table[current_state]
+        max_q = max(row)
+        idx = row.index(max_q)
+        direction = POSSIBLE_ACTIONS[idx]
+
+        next_state = get_next_state(current_state, direction) 
+        current_state = next_state
+    return optimal_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -212,8 +239,6 @@ if __name__ == '__main__':
     if not isinstance(numeric_level, int):
         raise ValueError('Invalid log level: %s' % loglevel)
     logging.basicConfig(filename='log.txt', filemode='w', level=numeric_level, format='%(levelname)s: %(message)s')
-    logging.info('Start of logfile.')
-
 
     num_episodes = int(args.num_episodes)
 
@@ -225,7 +250,7 @@ if __name__ == '__main__':
     display_grid(grid_world) 
     display_q_table(q_table)
 
-    print('Grid dimensions: {} x {}'.format(NUM_ROWS, NUM_COLS))
+    print('Grid dimensions: {}x{}'.format(NUM_ROWS, NUM_COLS))
     print('Epsilon at {:.2f}'.format(EPSILON))
     print('Running {} episodes...'.format(num_episodes))
 
@@ -262,7 +287,13 @@ if __name__ == '__main__':
         # decrease epsilon for exploration when num_episodes increases every ten percent
         if i % interval_to_reduce_epsilon == 0:
             EPSILON = EPSILON - .01
-            #print('episode #{} took {} steps to reach goal state with epsilon now at {:.2f}'.format(i, num_steps_until_goal_reached, EPSILON))
+            print('episode #{} took {} steps to reach goal state with epsilon now at {:.2f}'.format(i, num_steps_until_goal_reached, EPSILON))
             
-        print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
+        #print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
+    
+    path = calculate_optimal_policy(q_table)
+    for state in path:
+        print('state {} {}'.format(state, convert_current_state_to_coordinates(state)))
+    print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
+    
 
