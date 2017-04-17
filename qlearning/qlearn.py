@@ -23,14 +23,15 @@ PENALTY_ROW = END_STATE_ROW - 1
 PENALTY_COL = END_STATE_COL    
 
 # number of episodes to train
-NUM_EPISODES = 1
+NUM_EPISODES = 1000
 
 GAMMA = 0.9
 LEARNING_RATE = 0.5
+EPSILON = 0.01
 
 # initialize goal state (lower-right-hand corner)
 GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
-GOAL_STATE_VALUE = 0
+GOAL_STATE_VALUE = 0.0
 
 #----------------------------------
 
@@ -57,6 +58,13 @@ def convert_coordinates_to_current_state(row, col):
 
 def choose_action(current_state):
     print("choose_action()...")
+
+    # exploration (do completely random action)
+    rand = random.random()
+    if rand < EPSILON:
+        print("RANDOM ACTION SELECTED!!" + str(rand))
+        return random.choice(POSSIBLE_ACTIONS)
+
     x,y = convert_current_state_to_coordinates(current_state)
     print('\tq-values for current state {} ({},{}) are: {}'.format(current_state, x, y, q_table[current_state])) 
 
@@ -143,9 +151,8 @@ def compute_immediate_reward_and_update_q_table(previous_state, action_taken, ne
         # update q-table for previous state for the action just taken
         q_table[previous_state][act_action_idx] = new_q_value_for_previous_state
 
-        # update utility value for goal state
-        GOAL_STATE_VALUE = GOAL_STATE_VALUE + \
-                                            (LEARNING_RATE * (REWARD_ON_EXIT + (GAMMA * GOAL_STATE_VALUE) - GOAL_STATE_VALUE))
+        # TODO update utility value for goal state (is this correct?)
+        GOAL_STATE_VALUE = REWARD_ON_EXIT
         print('updated utility value for goal state is: {}'.format(GOAL_STATE_VALUE))
 
     # regular update (terminal state not reached)
