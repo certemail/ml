@@ -5,8 +5,8 @@ import logging
 
 #---global variables-----------------------------------------------------------
 # grid dimensions
-NUM_ROWS = 5 
-NUM_COLS = 5 
+NUM_ROWS = 15 
+NUM_COLS = 15 
 
 # learning parameters
 GAMMA = 0.9
@@ -287,9 +287,10 @@ if __name__ == '__main__':
         # decrease epsilon for exploration when num_episodes increases every ten percent
         if i % interval_to_reduce_epsilon == 0:
             EPSILON = EPSILON - .01
-            print('episode #{} took {} steps to reach goal state with epsilon now at {:.2f}'.format(i, num_steps_until_goal_reached, EPSILON))
+            #print('episode #{} took {} steps to reach goal state with epsilon now at {:.2f}'.format(i, num_steps_until_goal_reached, EPSILON))
             
-        #print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
+        if i % 10 == 0:
+            print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
     
     path = calculate_optimal_policy(q_table)
     for state in path:
