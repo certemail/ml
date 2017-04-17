@@ -12,7 +12,7 @@ GAMMA = 0.9
 LEARNING_RATE = 0.5
 
 # exploration probability
-EPSILON = 0.01
+EPSILON = 0.10
 
 # possible actions
 NUM_POSSIBLE_ACTIONS = 4
@@ -208,18 +208,21 @@ if __name__ == '__main__':
 
     num_episodes = int(args.num_episodes)
 
+    # parameters for reducing epsilon 
+    interval_to_reduce_epsilon = num_episodes * 0.10
+
     grid_world = initialize_grid()
     q_table = initialize_q_table()
     display_grid(grid_world) 
     display_q_table(q_table)
 
     print('running {} episodes'.format(num_episodes))
+    print('EPSILON AT {:.2f}'.format(EPSILON))
+
     for i in range(num_episodes):
         # start from beginning (upper left-hand corner at (0,0), reset after each episode and goal is reached)
         current_state = 0
         num_steps_until_goal_reached = 0
-
-        # TODO decrease epsilon every 1000 episodes
 
         while(current_state != GOAL_STATE):
             # observe current state
@@ -245,5 +248,10 @@ if __name__ == '__main__':
             current_state = new_state
 
             num_steps_until_goal_reached += 1
+
+        # decrease epsilon for exploration when num_episodes increases every ten percent
+        if i % interval_to_reduce_epsilon == 0:
+            EPSILON = EPSILON - .01
+            print('EPSILON REDUCED TO {:.2f}'.format(EPSILON))
 
         print('episode #{} took {} steps to reach goal state'.format(i, num_steps_until_goal_reached))
