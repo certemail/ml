@@ -2,6 +2,7 @@
 import random
 import argparse
 import logging
+from matplotlib import pyplot as plt
 
 #---global variables-----------------------------------------------------------
 # grid dimensions
@@ -268,6 +269,9 @@ if __name__ == '__main__':
     print('Epsilon at {:.2f}'.format(EPSILON))
     print('Running {} episodes...'.format(num_episodes))
 
+    x_episodes = []
+    y_num_steps = []
+
     for i in range(num_episodes):
         # start from beginning (upper left-hand corner at (0,0), reset after each episode and goal is reached)
         current_state = 0
@@ -301,9 +305,11 @@ if __name__ == '__main__':
         # decrease epsilon for exploration when num_episodes increases every ten percent
         if i % interval_to_reduce_epsilon == 0:
             EPSILON = EPSILON - .01
-            #print('episode #{} took {} steps to reach goal state with epsilon now at {:.2f}'.format(i, num_steps_until_goal_reached, EPSILON))
             
+        # collect values every 10 episodes for number of steps it takes to reach the goal state and epsilon
         if i % 10 == 0:
+            x_episodes.append(i)
+            y_num_steps.append(num_steps_until_goal_reached)
             print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
     
     path = calculate_optimal_policy(q_table)
@@ -312,3 +318,15 @@ if __name__ == '__main__':
     print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
     
     build_utility_matrix(q_table)
+
+    logging.info('number of episodes:')
+    logging.info(x_episodes)
+    logging.info('number of steps:')
+    logging.info(y_num_steps)
+    
+    # plot graph of episodes vs. steps to reach goal
+    plt.plot(x_episodes, y_num_steps)
+    plt.title('Number of steps to reach terminal state')
+    plt.ylabel('Steps')
+    plt.xlabel('Episodes')
+    plt.show()
