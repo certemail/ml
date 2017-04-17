@@ -23,7 +23,7 @@ PENALTY_ROW = END_STATE_ROW - 1
 PENALTY_COL = END_STATE_COL    
 
 # number of episodes to train
-NUM_EPISODES = 10000
+NUM_EPISODES = 100
 
 GAMMA = 0.9
 LEARNING_RATE = 0.5
@@ -193,9 +193,11 @@ if __name__ == '__main__':
     display_q_table(q_table)
 
     for i in range(NUM_EPISODES):
-
-        # start from beginning (upper left-hand corner at (0,0))
+        # start from beginning (upper left-hand corner at (0,0), reset after each episode and goal is reached)
         current_state = 0
+        num_steps_until_goal_reached = 0
+
+        # TODO decrease epsilon every 1000 episodes
 
         while(current_state != GOAL_STATE):
             # observe current state
@@ -219,3 +221,7 @@ if __name__ == '__main__':
 
             # move to the new state now 
             current_state = new_state
+
+            num_steps_until_goal_reached += 1
+
+        print('episode #{} took {} steps to reach goal state'.format(i, num_steps_until_goal_reached))
