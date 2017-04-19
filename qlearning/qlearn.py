@@ -66,7 +66,7 @@ def display_q_table(q_table):
     logging.debug('\t            {}      {}      {}      {}'.format('UP', 'DOWN', 'LEFT', 'RIGHT'))
     for row in q_table:
         rounded_row = [ '%.3f' % elem for elem in row]
-        logging.debug('state {}: {} --> max-q: {:.3f}'.format(state_number, rounded_row, max(row)))
+        logging.debug('state {:4d}: {} --> max-q: {:.3f}'.format(state_number, rounded_row, max(row)))
         state_number += 1
     logging.debug("------------")
 #---display_q_table--------------------------------------------------------------
@@ -239,7 +239,7 @@ def build_utility_matrix(q_table):
 
     counter = 0
     for value in utility_values:
-        print('{:.3f}'.format(value), end=' ') 
+        print('{:+.3f}'.format(value), end=' ') 
         counter += 1
         if counter % NUM_COLS == 0:
             print("\n")
@@ -311,7 +311,7 @@ if __name__ == '__main__':
         if i % 10 == 0:
             x_episodes.append(i)
             y_num_steps.append(num_steps_until_goal_reached)
-            print('Episode #{}: epsilon at {:.2f}; steps to reach goal state: {}'.format(i, EPSILON, num_steps_until_goal_reached))
+            print('Episode {:4d} --> epsilon at {:.2f}; steps to reach goal state: {:4d}'.format(i, EPSILON, num_steps_until_goal_reached))
     
     path = calculate_optimal_policy(q_table)
     for state in path:
