@@ -202,8 +202,6 @@ def compute_immediate_reward_and_update_q_table(previous_state, action_taken, ne
 #---compute_immediate_reward_and_update_q_table--------------------------------
 
 def calculate_optimal_policy(q_table):
-    print("\ncalculating optimal policy...")
-
     # show q_table, rounded to 3 decimal places
     logging.info('final q_table:')
     logging.info("------------")
@@ -231,7 +229,7 @@ def calculate_optimal_policy(q_table):
     return optimal_path
 
 def build_utility_matrix(q_table):
-    print("\nutility matrix:")
+    print("Utility matrix:")
     utility_values = []
     for row in q_table:
         utility_values.append(max(row))
@@ -242,7 +240,16 @@ def build_utility_matrix(q_table):
         print('{:+.3f}'.format(value), end=' ') 
         counter += 1
         if counter % NUM_COLS == 0:
-            print("\n")
+            print()
+
+
+def show_numbered_grid_states():
+    state_num = 0
+    for i in range(NUM_ROWS):
+        for j in range(NUM_COLS):
+            print('{:4d}'.format(state_num,i,j), end=' ')
+            state_num += 1
+        print() 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -312,12 +319,18 @@ if __name__ == '__main__':
             x_episodes.append(i)
             y_num_steps.append(num_steps_until_goal_reached)
             print('Episode {:4d} --> epsilon at {:.2f}; steps to reach goal state: {:4d}'.format(i, EPSILON, num_steps_until_goal_reached))
-    
+    print('{}'.format('='*25))
+    print('Calculating optimal policy for {}x{} grid:'.format(NUM_ROWS, NUM_COLS))
+    show_numbered_grid_states()
+    print('{}'.format('='*25))
+
     path = calculate_optimal_policy(q_table)
+    print('Optimal policy:') 
     for state in path:
         print('state {} {}'.format(state, convert_current_state_to_coordinates(state)))
     print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
     
+    print('{}'.format('='*25))
     build_utility_matrix(q_table)
 
     logging.info('number of episodes:')
