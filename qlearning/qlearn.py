@@ -6,8 +6,8 @@ from matplotlib import pyplot as plt
 
 #---global variables-----------------------------------------------------------
 # grid dimensions
-NUM_ROWS = 15 
-NUM_COLS = 15 
+#NUM_ROWS = None
+#NUM_COLS = None
 
 # learning parameters
 GAMMA = 0.9
@@ -26,25 +26,28 @@ REWARD_IN_PENALTY_SQUARE = -1.0
 REWARD_FOR_MAKING_ANY_MOVE = -0.04
 
 # exit state position
-END_STATE_ROW = NUM_ROWS - 1 
-END_STATE_COL = NUM_COLS - 1 
+#END_STATE_ROW = NUM_ROWS - 1 
+#END_STATE_COL = NUM_COLS - 1 
 
 # penalty position
-PENALTY_ROW = END_STATE_ROW - 1 
-PENALTY_COL = END_STATE_COL    
+#PENALTY_ROW = END_STATE_ROW - 1 
+#PENALTY_COL = END_STATE_COL    
 
 # initialize goal state (lower-right-hand corner)
-GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
-GOAL_STATE_VALUE = 0.0
+#GOAL_STATE = None
+#GOAL_STATE_VALUE = None
 #---global variables-----------------------------------------------------------
 
 def initialize_grid():
     logging.info("initializing grid...")
+    end_state_row = NUM_ROWS - 1
+    end_state_col = NUM_COLS - 1
+
     grid_world = [[0.0 for col in range(NUM_COLS)] for row in range(NUM_ROWS)]
-    logging.info("exit position:    " + "(" + str(END_STATE_ROW) + "," + str(END_STATE_COL) + ")")
-    logging.info("penalty position: " + "(" + str(PENALTY_ROW) + "," + str(PENALTY_COL) + ")")
-    grid_world[PENALTY_ROW][PENALTY_COL] = REWARD_IN_PENALTY_SQUARE
-    grid_world[END_STATE_ROW][END_STATE_COL] = REWARD_ON_EXIT
+    logging.info("exit position:    " + "(" + str(end_state_row) + "," + str(end_state_col) + ")")
+    #logging.info("penalty position: " + "(" + str(PENALTY_ROW) + "," + str(PENALTY_COL) + ")")
+    #grid_world[PENALTY_ROW][PENALTY_COL] = REWARD_IN_PENALTY_SQUARE
+    grid_world[end_state_row][end_state_col] = REWARD_ON_EXIT
     return grid_world
 
 def initialize_q_table():
@@ -253,17 +256,29 @@ def show_numbered_grid_states():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("num_rows", help="number of rows")
+    parser.add_argument("num_cols", help="number of cols")
     parser.add_argument("num_episodes", help="number of episodes")
-    parser.add_argument("--log_level", help="log level")
+
+    parser.add_argument("--log", help="log level")
     args = parser.parse_args()
 
-    if args.log_level:
-        numeric_level = getattr(logging, args.log_level.upper(), None)
+    if args.log:
+        numeric_level = getattr(logging, args.log.upper(), None)
         if not isinstance(numeric_level, int):
             raise ValueError('Invalid log level: %s' % loglevel)
         logging.basicConfig(filename='log.txt', filemode='w', level=numeric_level, format='%(levelname)s: %(message)s')
 
+    global NUM_ROWS
+    global NUM_COLS
+    global GOAL_STATE
+    global GOAL_STATE_VALUE
     num_episodes = int(args.num_episodes)
+    NUM_ROWS = int(args.num_rows)
+    NUM_COLS = int(args.num_cols)
+    GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
+    GOAL_STATE_VALUE = 0.0
+
 
     # parameters for reducing epsilon 
     interval_to_reduce_epsilon = num_episodes * 0.10
