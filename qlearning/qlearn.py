@@ -254,6 +254,40 @@ def show_numbered_grid_states():
             state_num += 1
         print() 
 
+def show_graph(x_episodes, y_num_steps):
+    logging.info('number of episodes:')
+    logging.info(x_episodes)
+    logging.info('number of steps:')
+    logging.info(y_num_steps)
+    
+    # plot graph of episodes vs. steps to reach goal
+    plt.plot(x_episodes, y_num_steps)
+    plt.title('Number of steps to reach terminal state')
+    plt.ylabel('Steps')
+    plt.xlabel('Episodes')
+    plt.show()
+
+def show_optimal_policy(path):
+    print('Optimal policy:') 
+    for state in path:
+        print('state {} {}'.format(state, convert_current_state_to_coordinates(state)))
+    print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
+
+def show_optimal_path(path):
+    print('Optimal path:')
+    state_num = 0
+    for i in range(NUM_ROWS):
+        for j in range(NUM_COLS):
+            if state_num in path:
+                print('{:4d}'.format(state_num), end=' ')
+            elif state_num == GOAL_STATE:
+                print('{:4d}'.format(GOAL_STATE), end=' ')
+            else:
+                print('{:>4}'.format('-'), end=' ')
+            state_num += 1
+        print() 
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("num_rows", help="number of rows")
@@ -334,28 +368,19 @@ if __name__ == '__main__':
             x_episodes.append(i)
             y_num_steps.append(num_steps_until_goal_reached)
             print('Episode {:4d} --> epsilon at {:.2f}; steps to reach goal state: {:4d}'.format(i, EPSILON, num_steps_until_goal_reached))
+
     print('{}'.format('='*25))
     print('Calculating optimal policy for {}x{} grid:'.format(NUM_ROWS, NUM_COLS))
     show_numbered_grid_states()
     print('{}'.format('='*25))
 
     path = calculate_optimal_policy(q_table)
-    print('Optimal policy:') 
-    for state in path:
-        print('state {} {}'.format(state, convert_current_state_to_coordinates(state)))
-    print('GOAL  {} {}'.format(GOAL_STATE, convert_current_state_to_coordinates(GOAL_STATE)))
+    show_optimal_policy(path)
     
+    print('{}'.format('='*25))
+    show_optimal_path(path)
+
     print('{}'.format('='*25))
     build_utility_matrix(q_table)
 
-    logging.info('number of episodes:')
-    logging.info(x_episodes)
-    logging.info('number of steps:')
-    logging.info(y_num_steps)
-    
-    # plot graph of episodes vs. steps to reach goal
-    plt.plot(x_episodes, y_num_steps)
-    plt.title('Number of steps to reach terminal state')
-    plt.ylabel('Steps')
-    plt.xlabel('Episodes')
-    plt.show()
+    show_graph(x_episodes, y_num_steps)
