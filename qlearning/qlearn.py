@@ -313,7 +313,6 @@ if __name__ == '__main__':
     GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
     GOAL_STATE_VALUE = 0.0
 
-
     # parameters for reducing epsilon 
     interval_to_reduce_epsilon = num_episodes * 0.10
 
@@ -359,14 +358,16 @@ if __name__ == '__main__':
 
             num_steps_until_goal_reached += 1
 
+        # collect episode and number of steps for graphing
+        x_episodes.append(i)
+        y_num_steps.append(num_steps_until_goal_reached)
+
         # decrease epsilon for exploration when num_episodes increases every ten percent
         if i % interval_to_reduce_epsilon == 0:
             EPSILON = EPSILON - .01
             
-        # collect values every 10 episodes for number of steps it takes to reach the goal state and epsilon
+        # display values every 10 episodes for number of steps it takes to reach the goal state and epsilon
         if i % 10 == 0:
-            x_episodes.append(i)
-            y_num_steps.append(num_steps_until_goal_reached)
             print('Episode {:4d} --> epsilon at {:.2f}; steps to reach goal state: {:4d}'.format(i, EPSILON, num_steps_until_goal_reached))
 
     print('{}'.format('='*25))
