@@ -260,9 +260,11 @@ def show_graph(x_episodes, y_num_steps):
     logging.info('number of steps:')
     logging.info(y_num_steps)
     
+    title = 'Number of Steps to Reach Terminal State\n Reward per step: {}, Reward on exit: {}'.format(REWARD_FOR_MAKING_ANY_MOVE, REWARD_ON_EXIT)
+
     # plot graph of episodes vs. steps to reach goal
     plt.plot(x_episodes, y_num_steps)
-    plt.title('Number of steps to reach terminal state')
+    plt.title(title)
     plt.ylabel('Steps')
     plt.xlabel('Episodes')
     plt.show()
