@@ -5,10 +5,6 @@ import logging
 from matplotlib import pyplot as plt
 
 #---global variables-----------------------------------------------------------
-# grid dimensions
-#NUM_ROWS = None
-#NUM_COLS = None
-
 # learning parameters
 GAMMA = 0.9
 LEARNING_RATE = 0.5
@@ -19,23 +15,6 @@ EPSILON = 0.10
 # possible actions
 NUM_POSSIBLE_ACTIONS = 4
 POSSIBLE_ACTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT']
-
-# rewards
-REWARD_ON_EXIT = 10.0
-REWARD_FOR_MAKING_ANY_MOVE = -1.0
-#REWARD_IN_PENALTY_SQUARE = -1.0
-
-# exit state position
-#END_STATE_ROW = NUM_ROWS - 1 
-#END_STATE_COL = NUM_COLS - 1 
-
-# penalty position
-#PENALTY_ROW = END_STATE_ROW - 1 
-#PENALTY_COL = END_STATE_COL    
-
-# initialize goal state (lower-right-hand corner)
-#GOAL_STATE = None
-#GOAL_STATE_VALUE = None
 #---global variables-----------------------------------------------------------
 
 def initialize_grid():
@@ -45,8 +24,6 @@ def initialize_grid():
 
     grid_world = [[0.0 for col in range(NUM_COLS)] for row in range(NUM_ROWS)]
     logging.info("exit position:    " + "(" + str(end_state_row) + "," + str(end_state_col) + ")")
-    #logging.info("penalty position: " + "(" + str(PENALTY_ROW) + "," + str(PENALTY_COL) + ")")
-    #grid_world[PENALTY_ROW][PENALTY_COL] = REWARD_IN_PENALTY_SQUARE
     grid_world[end_state_row][end_state_col] = REWARD_ON_EXIT
     return grid_world
 
@@ -295,7 +272,8 @@ if __name__ == '__main__':
     parser.add_argument("num_rows", help="number of rows")
     parser.add_argument("num_cols", help="number of cols")
     parser.add_argument("num_episodes", help="number of episodes")
-
+    parser.add_argument("reward_per_move", help="reward per move")
+    parser.add_argument("reward_on_exit", help="reward on exit")
     parser.add_argument("--log", help="log level")
     args = parser.parse_args()
 
@@ -309,9 +287,15 @@ if __name__ == '__main__':
     global NUM_COLS
     global GOAL_STATE
     global GOAL_STATE_VALUE
+    global REWARD_FOR_MAKING_ANY_MOVE
+    global REWARD_ON_EXIT
+
     num_episodes = int(args.num_episodes)
     NUM_ROWS = int(args.num_rows)
     NUM_COLS = int(args.num_cols)
+    REWARD_FOR_MAKING_ANY_MOVE = float(args.reward_per_move)
+    REWARD_ON_EXIT = float(args.reward_on_exit)
+
     GOAL_STATE = (NUM_ROWS * NUM_COLS) - 1
     GOAL_STATE_VALUE = 0.0
 
@@ -324,6 +308,8 @@ if __name__ == '__main__':
     display_q_table(q_table)
 
     print('Grid dimensions: {}x{}'.format(NUM_ROWS, NUM_COLS))
+    print('Reward per move: {}'.format(REWARD_FOR_MAKING_ANY_MOVE))
+    print('Reward on exit: {}'.format(REWARD_ON_EXIT))
     print('Epsilon at {:.2f}'.format(EPSILON))
     print('Running {} episodes...'.format(num_episodes))
 
