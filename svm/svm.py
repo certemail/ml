@@ -15,8 +15,9 @@ def show_new_feature_space():
     
     plt.scatter(x1_A, x2_A, label='class A', color='b')
     plt.scatter(x1_B, x2_B, label='class B', color='r')
-    plt.xlim(-6.0, 6.0)
-    plt.ylim(-6.0, 6.0)
+    plt.xlim(-6.5, 6.5)
+    plt.ylim(-6.5, 6.5)
+    #plt.plot([0,2],[2,1])
     plt.title('svm - new feature space')
     plt.xlabel('x1 axis')
     plt.ylabel('x2 axis')
