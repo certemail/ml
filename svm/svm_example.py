@@ -31,8 +31,12 @@ print()
 a = -w[0] / w[1]
 print('{} {}'.format("a:", a))
 
-test_point = [[0,-1]]
-print('{} {} --> class {}'.format("predicting point:", test_point, clf.predict(test_point)))
+test_point_1 = [[ 0, -1 ]]
+test_point_2 = [[ 1,  2 ]]
+test_point_3 = [[ 2,  3 ]]
+print('{} {} --> class {}'.format("predicting point:", test_point_1, clf.predict(test_point_1)))
+print('{} {} --> class {}'.format("predicting point:", test_point_2, clf.predict(test_point_2)))
+print('{} {} --> class {}'.format("predicting point:", test_point_3, clf.predict(test_point_3)))
 
 xx = np.linspace(0,4)
 yy = a * xx - clf.intercept_[0] / w[1]
