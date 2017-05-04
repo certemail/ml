@@ -11,6 +11,10 @@ from sklearn.model_selection import cross_val_score
 
 features_and_vector_lengths = {}
 
+
+def display_accuracy(scores):
+    print("cross validation accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
 def display_data_matrix(data):
     logging.debug("\n========DATA MATRIX======")
     #logging.debug(*data, sep='\n')
@@ -104,6 +108,7 @@ def train_svm(X, y):
     
     # convert to numpy ndarray (probably not even necessary)
     X = np.array(X)
+    y = np.array(y)
     
     # print original dataset feature values
     print("dataset (X):")
@@ -113,6 +118,7 @@ def train_svm(X, y):
     print("classification (y):")
     print(y)
     print('{}: {}'.format("number of classes", len(set(y))))
+    print('{}: {}'.format("number of samples", len(y)))
     
     print("*************\n")
     
@@ -123,6 +129,8 @@ def train_svm(X, y):
     scores = cross_val_score(clf, X, y, cv=10)
     print("SCORES:")
     print(scores)
+    display_accuracy(scores)
+    print()
 
     clf.fit(X,y)
 
