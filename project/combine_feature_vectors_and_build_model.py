@@ -7,6 +7,7 @@ import logging
 import itertools as it
 import numpy as np
 from sklearn import svm
+from sklearn.model_selection import cross_val_score
 
 features_and_vector_lengths = {}
 
@@ -136,8 +137,16 @@ if __name__ == '__main__':
     
     print("*************\n")
     
+    # TODO - need to account for 'unbalanced' with class_weight
     clf = svm.SVC(kernel='linear', C = 1.0)
+
+    # cross validation scores
+    #scores = cross_val_score(clf, X, y, cv=10)
+    #print("SCORES:")
+    #print(scores)
+
     clf.fit(X,y)
+
     print('{} {}'.format("clf:", clf))
     print()
     
