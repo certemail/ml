@@ -4,16 +4,19 @@ from matplotlib import style
 style.use("ggplot")
 from sklearn import svm
 
-X = np.array([[4,4],  # class A (+)
+X =          [[4,4],  # class A (+)
               [4,2],  # class A (+)
               [1,2],  # class A (+)
               [4,2],  # class A (+)
               [4,-4], # class B (-)
               [0,0],  # class B (-)
               [0,0],  # class B (-)
-              [4,-2]])# class B (-)
+              [4,-2]] # class B (-)
 
 y = [1,1,1,1,0,0,0,0]
+
+# convert X to numpy ndarray
+X = np.array(X)
 
 clf = svm.SVC(kernel='linear', C = 1.0)
 clf.fit(X,y)
