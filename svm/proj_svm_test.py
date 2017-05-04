@@ -57,9 +57,11 @@ print('{}: {}'.format("number of classes", len(set(y))))
 
 print("*************\n")
 
+# TODO account for unbalanced dataset (use 'class_weight')
 clf = svm.SVC(kernel='linear', C = 1.0)
-scores = cross_val_score(clf, X, y, cv=10)
 
+# cross validation score
+scores = cross_val_score(clf, X, y, cv=10)
 print("SCORES:")
 print(scores)
 display_accuracy(scores)
