@@ -94,6 +94,56 @@ def build_matrix_from_selected_features(path_to_dataset, path_to_list_of_feature
 
     return data_matrix
 
+
+def train_svm(X, y):
+    print("\n*******************************")
+    print("*******************************")
+    print("Starting to train with SVM...")
+    print("*******************************")
+    print("*******************************")
+    
+    # convert to numpy ndarray (probably not even necessary)
+    X = np.array(X)
+    
+    # print original dataset feature values
+    print("dataset (X):")
+    print(X)
+    print('{}: {}'.format("length of feature vector", len(X[0])))
+    print()
+    print("classification (y):")
+    print(y)
+    print('{}: {}'.format("number of classes", len(set(y))))
+    
+    print("*************\n")
+    
+    # account for 'unbalanced' with class_weight
+    clf = svm.SVC(kernel='linear', class_weight='balanced', C = 1.0)
+
+    # cross validation scores (10-fold)
+    scores = cross_val_score(clf, X, y, cv=10)
+    print("SCORES:")
+    print(scores)
+
+    clf.fit(X,y)
+
+    print('{} {}'.format("clf:", clf))
+    print()
+    
+    w = clf.coef_[0]
+    print("clf.coef_[0] (w):")
+    print("feature vector length: " + str(len(clf.coef_[0])))
+    print(w)
+    print()
+    
+    print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
+    
+    print('{}: {}'.format("number of classes", len(clf.n_support_)))
+    print('{}: {}'.format("number of support vectors for each class:", clf.n_support_))
+    
+    print("support vectors:")
+    print(clf.support_vectors_)
+    print()
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("path_to_normalized_dataset", help="path to normalized dataset")
@@ -117,53 +167,6 @@ if __name__ == '__main__':
     X = [row[:-1] for row in data]
     y = [row[-1] for row in data]
 
-    # TODO - train SVM using X and Y from 'data'
-    print("\n*******************************")
-    print("*******************************")
-    print("Starting to train with SVM...")
-    print("*******************************")
-    print("*******************************")
+    # train SVM using X and Y from 'data'
+    train_svm(X, y)
     
-    X = np.array(X)
-    
-    # print original dataset feature values
-    print("dataset (X):")
-    print(X)
-    print('{}: {}'.format("length of feature vector", len(X[0])))
-    print()
-    print("classification (y):")
-    print(y)
-    print('{}: {}'.format("number of classes", len(set(y))))
-    
-    print("*************\n")
-    
-    # TODO - need to account for 'unbalanced' with class_weight
-    clf = svm.SVC(kernel='linear', C = 1.0)
-
-    # cross validation scores
-    #scores = cross_val_score(clf, X, y, cv=10)
-    #print("SCORES:")
-    #print(scores)
-
-    clf.fit(X,y)
-
-    print('{} {}'.format("clf:", clf))
-    print()
-    
-    w = clf.coef_[0]
-    print("clf.coef_[0] (w):")
-    print("feature vector length: " + str(len(clf.coef_[0])))
-    print(w)
-    print()
-    
-    print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
-    
-    print('{}: {}'.format("number of classes", len(clf.n_support_)))
-    print('{}: {}'.format("number of support vectors for each class:", clf.n_support_))
-    
-    print("support vectors:")
-    print(clf.support_vectors_)
-    print()
-    
-   # make predictions....
-   # print(clf.predict( [[ 1,0,0,1,0....]] ))
