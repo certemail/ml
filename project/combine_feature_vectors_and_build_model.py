@@ -144,7 +144,6 @@ def train_svm(X, y):
     print()
     
     print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
-    
     print('{}: {}'.format("number of classes", len(clf.n_support_)))
     print('{}: {}'.format("number of support vectors for each class:", clf.n_support_))
     

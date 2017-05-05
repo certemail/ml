@@ -1,6 +1,11 @@
+#!/bin/bash
 
-if [[ -z "$1" ]]; then
-  echo "usage: ${0} [subfolder_to_copy]"
+if [[ -z "$2" ]]; then
+  echo "usage: ${0} [subfolder_to_copy] [number_of_files_to_copy]"
+  echo ""
+  echo "example: to copy 50 Zeus files from the full dataset into the sample_dataset directory:"
+  echo "${0} Zeus 50"
+  echo ""
   exit
 fi
 
