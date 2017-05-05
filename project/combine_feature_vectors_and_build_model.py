@@ -13,7 +13,7 @@ features_and_vector_lengths = {}
 
 
 def display_accuracy(scores):
-    print("cross validation accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    print("accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 def display_data_matrix(data):
     logging.debug("\n========DATA MATRIX======")
@@ -106,17 +106,12 @@ def train_svm(X, y):
     print("*******************************")
     print("*******************************")
     
-    # convert to numpy ndarray (probably not even necessary)
-    X = np.array(X)
-    y = np.array(y)
-    
     # print original dataset feature values
-    print("dataset (X):")
-    print(X)
+    logging.debug("feature values (X):")
+    logging.debug(X)
     print('{}: {}'.format("length of feature vector", len(X[0])))
-    print()
-    print("classification (y):")
-    print(y)
+    logging.debug("classification (y):")
+    logging.debug(y)
     print('{}: {}'.format("number of classes", len(set(y))))
     print('{}: {}'.format("number of samples", len(y)))
     
@@ -127,29 +122,28 @@ def train_svm(X, y):
 
     # cross validation scores (10-fold)
     scores = cross_val_score(clf, X, y, cv=10)
-    print("SCORES:")
+    print("cross validation scores:")
     print(scores)
     display_accuracy(scores)
     print()
 
     clf.fit(X,y)
 
-    print('{} {}'.format("clf:", clf))
-    print()
+    print('{} {}\n'.format("clf:", clf))
     
     w = clf.coef_[0]
-    print("clf.coef_[0] (w):")
+    logging.info("")
+    logging.info("clf.coef_[0] (w):")
+    logging.info(w)
+    logging.info("")
     print("feature vector length: " + str(len(clf.coef_[0])))
-    print(w)
-    print()
     
     print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
     print('{}: {}'.format("number of classes", len(clf.n_support_)))
-    print('{}: {}'.format("number of support vectors for each class:", clf.n_support_))
+    print('{}: {}'.format("number of support vectors for each class", clf.n_support_))
     
-    print("support vectors:")
-    print(clf.support_vectors_)
-    print()
+    logging.info("support vectors:")
+    logging.info(clf.support_vectors_)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -171,6 +165,13 @@ if __name__ == '__main__':
     # print out data (for debugging)
     display_data_matrix(data)
 
+    # convert matrix to numpy ndarray
+    data = np.array(data)
+
+    # randomize samples (by row)
+    np.random.shuffle(data)
+
+    # split into matrix of feature values and classification vector
     X = [row[:-1] for row in data]
     y = [row[-1] for row in data]
 
