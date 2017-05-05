@@ -55,8 +55,10 @@ def build_matrix_from_selected_features(path_to_dataset, path_to_list_of_feature
     # read in desired features for use in the model from text file and sort alphabetically
     features_to_use = sorted([line.rstrip() for line in open(path_to_list_of_features_to_train)])
 
+    print("Building data matrix using the following features:")
+    print(*features_to_use, sep='\n')
+    print()
     logging.info("\n")
-    #logging.debug("FEATURES USED FOR THIS MODEL:", *features_to_use, sep='\n')
     logging.info("FEATURES USED FOR THIS MODEL:")
     logging.info("-----------")
     for f in features_to_use:
