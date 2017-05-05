@@ -31,7 +31,7 @@ def display_data_matrix(data):
     logging.debug("y: ")
     logging.debug(y)
 
-    print("========DATA SUMMARY======")
+    print("========Data summary (preprocessing)======")
     print("matrix dimensions: " + str(len(data)) + " x " + str(len(data[0])))
     print("number of rows: " + str(len(data)))
     print("length of feature vector: " + str(len(X[0])))
