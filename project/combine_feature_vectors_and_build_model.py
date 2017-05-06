@@ -13,7 +13,7 @@ features_and_vector_lengths = {}
 
 
 def display_accuracy(scores):
-    print("accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
 def display_data_matrix(data):
     logging.debug("\n========DATA MATRIX======")
@@ -31,10 +31,7 @@ def display_data_matrix(data):
     logging.debug("y: ")
     logging.debug(y)
 
-    print("========Data summary (preprocessing)======")
-    print("matrix dimensions: " + str(len(data)) + " x " + str(len(data[0])))
-    print("number of rows: " + str(len(data)))
-    print("length of feature vector: " + str(len(X[0])))
+    print("Preprocessing complete; matrix dimensions: " + str(len(data)) + " x " + str(len(data[0])))
 
 def convert_label(label_as_list):
     # index of where "1" indicates the class (0,1,2,3)
@@ -55,8 +52,11 @@ def build_matrix_from_selected_features(path_to_dataset, path_to_list_of_feature
     # read in desired features for use in the model from text file and sort alphabetically
     features_to_use = sorted([line.rstrip() for line in open(path_to_list_of_features_to_train)])
 
-    print("Building data matrix using the following features:")
-    print(*features_to_use, sep='\n')
+    print("Preprocessing...")
+    print("Building input matrix from the following features:")
+    for feature in features_to_use:
+        print('  {}'.format(feature))
+    #print(*features_to_use, sep='\n')
     print()
     logging.info("\n")
     logging.info("FEATURES USED FOR THIS MODEL:")
@@ -102,50 +102,43 @@ def build_matrix_from_selected_features(path_to_dataset, path_to_list_of_feature
 
 
 def train_svm(X, y):
-    print("\n*******************************")
-    print("*******************************")
-    print("Starting to train with SVM...")
-    print("*******************************")
-    print("*******************************")
+    print("Training SVM w/ linear kernel...")
     
     # print original dataset feature values
     logging.debug("feature values (X):")
     logging.debug(X)
-    print('{}: {}'.format("length of feature vector", len(X[0])))
     logging.debug("classification (y):")
     logging.debug(y)
-    print('{}: {}'.format("number of classes", len(set(y))))
-    print('{}: {}'.format("number of samples", len(y)))
-    
-    print("*************\n")
     
     # account for 'unbalanced' with class_weight
     clf = svm.SVC(kernel='linear', class_weight='balanced', C = 1.0)
-
-    # cross validation scores (10-fold)
-    scores = cross_val_score(clf, X, y, cv=10)
-    print("cross validation scores:")
-    print(scores)
-    display_accuracy(scores)
-    print()
-
     clf.fit(X,y)
 
-    print('{} {}\n'.format("clf:", clf))
+    print()
+    print('{}\n'.format(clf))
     
     w = clf.coef_[0]
     logging.info("")
     logging.info("clf.coef_[0] (w):")
     logging.info(w)
     logging.info("")
-    print("feature vector length: " + str(len(clf.coef_[0])))
+    print('{}: {}'.format("Number of samples", len(y)))
+    print('{}: {}'.format("Number of classes", len(clf.n_support_)))
+    print("Feature vector length: " + str(len(clf.coef_[0])))
     
-    print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
-    print('{}: {}'.format("number of classes", len(clf.n_support_)))
-    print('{}: {}'.format("number of support vectors for each class", clf.n_support_))
+    logging.info('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
+    print('{}: {}'.format("Number of support vectors for each class", clf.n_support_))
     
-    logging.info("support vectors:")
+    logging.info("Support vectors:")
     logging.info(clf.support_vectors_)
+
+    # cross validation scores (10-fold)
+    scores = cross_val_score(clf, X, y, cv=10)
+    print()
+    print("Cross validation scores:")
+    for score in scores:
+        print('  {:.3f}'.format(score))
+    display_accuracy(scores)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -161,11 +154,14 @@ if __name__ == '__main__':
             raise ValueError('Invalid log level: %s' % loglevel)
         logging.basicConfig(filename='log.txt', filemode='w', level=numeric_level, format='%(levelname)s: %(message)s')
 
+
+    print('{}'.format('='*60))
     get_all_features_and_vector_lengths(args.path_to_all_possible_feature_values_filename)
     data = build_matrix_from_selected_features(args.path_to_normalized_dataset, args.path_to_list_of_features_to_train)
 
     # print out data (for debugging)
     display_data_matrix(data)
+    print('{}'.format('='*60))
 
     # convert matrix to numpy ndarray
     data = np.array(data)
@@ -179,4 +175,5 @@ if __name__ == '__main__':
 
     # train SVM using X and Y from 'data'
     train_svm(X, y)
+    print('{}'.format('='*60))
     
