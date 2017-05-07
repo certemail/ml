@@ -19,3 +19,6 @@ cat 2693_uiayp.json | jq -r '.properties.reg_read' | sort | tr " " "\n"
 
 # convert json into pretty printed version (keys sorted alphabetically) that is easier to read
 cat 900_wsuay.json | python -m json.tool --sort-keys
+
+# count number of families in dataset
+FAMILY='Crypto'; for file in ~/MalwareTrainingSets/trainingSets/${FAMILY}/*; do cat ${file} | jq -r '.properties.label'; done | grep "${FAMILY}" | wc -l
