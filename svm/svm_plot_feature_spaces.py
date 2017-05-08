@@ -18,7 +18,7 @@ def show_new_feature_space():
     plt.xlim(-6.5, 6.5)
     plt.ylim(-6.5, 6.5)
     #plt.plot([0,2],[2,1])
-    plt.title('svm - new feature space')
+    plt.title('Feature Space (x1,x2) --> ((x1)^2, (x1*x2)')
     plt.xlabel('x1 axis')
     plt.ylabel('x2 axis')
     plt.legend(loc='upper left')
@@ -35,14 +35,14 @@ def show_original_dataset():
     
     plt.scatter(x1_A, x2_A, label='class A', color='b')
     plt.scatter(x1_B, x2_B, label='class B', color='r')
-    plt.title('svm - non-linearly separable')
+    plt.title('Input Space (non-linearly separable)')
     plt.xlabel('x1 axis')
     plt.ylabel('x2 axis')
     plt.legend(loc='center')
     plt.show()
 
 def main():
-    #show_original_dataset()
+    show_original_dataset()
     show_new_feature_space()
 
 if __name__ == '__main__':
