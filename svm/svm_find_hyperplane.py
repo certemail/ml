@@ -22,14 +22,14 @@ clf = svm.SVC(kernel='linear', C = 1.0)
 clf.fit(X,y)
 
 w = clf.coef_[0]
-print('{}: {}'.format("clf.coef_[0] (w)", w))
+print('{}: {}'.format("clf.coef_[0] (weights)", w))
 print('{}: {}'.format("clf.intercept_[0]", clf.intercept_[0]))
-print('{}: {}'.format("number of support vectors for each class:", clf.n_support_))
+print('{}: {}'.format("number of support vectors for each class", clf.n_support_))
 print('{}: {}'.format("support vectors", clf.support_vectors_))
 print()
 
 a = -w[0] / w[1]
-print('{} {}'.format("a:", a))
+print('{} {}'.format("a (slope):", a))
 
 test_point_1 = [[ 0, -1 ]]
 test_point_2 = [[ 1,  2 ]]
