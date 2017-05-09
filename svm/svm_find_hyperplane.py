@@ -38,12 +38,15 @@ print('{} {} --> class {}'.format("predicting point:", test_point_1, clf.predict
 print('{} {} --> class {}'.format("predicting point:", test_point_2, clf.predict(test_point_2)))
 print('{} {} --> class {}'.format("predicting point:", test_point_3, clf.predict(test_point_3)))
 
-xx = np.linspace(0,4)
+xx = np.linspace(0,6)
 yy = a * xx - clf.intercept_[0] / w[1]
 
-h0 = plt.plot(xx, yy, 'k-', label="non weighted div")
+h0 = plt.plot(xx, yy, 'k-', label='Hyperplane' )
 
 plt.scatter(X[:, 0], X[:, 1], c = y)
+plt.title('Feature Space (x1,x2) --> ((x1)^2, (x1*x2)')
+plt.xlabel('x1 axis')
+plt.ylabel('x2 axis')
 plt.legend()
 plt.show()
 

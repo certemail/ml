@@ -38,7 +38,7 @@ def show_original_dataset():
     plt.title('Input Space (non-linearly separable)')
     plt.xlabel('x1 axis')
     plt.ylabel('x2 axis')
-    plt.legend(loc='center')
+    plt.legend(loc='center left')
     plt.show()
 
 def main():
