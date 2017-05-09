@@ -1,7 +1,4 @@
 {
-    "label": [
-        "Zeus"
-    ],
     "api_resolv": [
         "1b64cca1",
         "2390c65d",
@@ -21,5 +18,8 @@
         "3c6b9e80",
         "3d801aa5",
         "bda9f42e"
+    ],
+    "label": [
+        "Zeus"
     ]
 }
