@@ -122,8 +122,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# visualize
+# NEW LINE I JUST ADDED!
 #plt.gray() 
 #plt.matshow(digits.images[1796]) 
 #plt.show()
