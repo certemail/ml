@@ -1,0 +1,11 @@
+name,gender,years_in_service,salary,position
+Alice,female,6,75000,"Program Manager"
+Bob,male,14,45000,"Help Desk"   
+David,male,10,60500,"Clerk"
+Harold,male,5,34000,"Help Desk"
+Lisa,female,17,90000,"Senior Data Scientist"
+Misha,female,29,95000,"Chief Data Scientist"
+Tom,male,20,88000,"Senior Data Scientist"
+Bernie,male,13,48000,"Clerk"
+Margaret,female,23,100000,"CEO"
+Billy,male,8,50000,"Clerk"
