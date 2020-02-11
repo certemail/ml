@@ -1,0 +1,19 @@
+STATE,County_name,Comp5star,PROVNUM,PROVNAME,Sum of MDScensus_avg,Sum of Beds_Avail,Count of FACID
+AK,Anchorage,4,25018,A,10,16,1
+,,5,25025,B,11,17,1
+,,,25036,C,12,18,1
+,Fairbanks North Star,3,25020,D,13,19,1
+WY,Laramie,1,535013,E,17,28,1
+,,,535025,F,19,77,1
+,,5,535032,G,21,14,1
+,,,535044,H,23,56,1
+,Natrona,4,535024,K,45,56,1
+,,,535049,L,93,26,1
+VT,Chittenden,1,475030,X,123,56,1
+,,2,475014,Y,45,12,1
+,,3,475040,Z,44,57,1
+,,4,475003,AA,33,12,1
+,,5,475056,BB,22,3,1
+,Franklin,2,475021,CC,77,33,1
+,,5,475047,DD,88,55,1
+,,,475055,EE,55,66,1
